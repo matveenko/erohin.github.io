@@ -26,7 +26,8 @@
             --shadow: 0 8px 24px rgba(16, 42, 67, 0.08);
             --toggle-bg: #FFFFFF;
             --toggle-icon: #007AFF;
-            --toggle-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Тень как у других кнопок */
+            --toggle-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --highlight-bg: rgba(255, 215, 0, 0.4); /* Цвет подсветки поиска */
         }
 
         /* --- DARK THEME OVERRIDES --- */
@@ -47,9 +48,10 @@
             --accent-deep: #F8FAFC;   
             --accent-light: #1e293b; 
             --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            --toggle-bg: #1e293b; /* Цвет как у кнопки назад */
+            --toggle-bg: #1e293b;
             --toggle-icon: #FFD700;
             --toggle-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            --highlight-bg: rgba(255, 215, 0, 0.6); /* Чуть ярче для темной темы */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
@@ -75,22 +77,18 @@
             position: fixed; top: 0; left: 0; width: 100%;
             background: var(--bg-body-start);
             z-index: 100;
-            padding: 15px 15px 10px 15px; /* Вернули нормальные отступы */
+            padding: 15px 15px 10px 15px; 
             border-bottom: 1px solid rgba(0,0,0,0.05);
             display: none;
         }
         
         .header-top-row { 
-            display: flex; 
-            align-items: center; /* Выравнивание по центру по вертикали */
-            width: 100%;
-            margin-bottom: 12px;
-            gap: 10px; /* Равное расстояние между элементами */
+            display: flex; align-items: center; width: 100%;
+            margin-bottom: 12px; gap: 10px;
         }
 
         .back-btn { 
-            padding: 0 16px; /* Убрал верт паддинг, задал высоту */
-            height: 42px;    /* Фиксированная высота как у инпута */
+            padding: 0 16px; height: 42px;    
             background: var(--bg-card); 
             border-radius: 12px; 
             color: var(--accent-main); 
@@ -104,15 +102,12 @@
         .back-btn:active { transform: scale(0.95); }
         
         .search-box { 
-            flex: 1; 
-            min-width: 0; 
-            height: 42px; /* Фиксированная высота */
+            flex: 1; min-width: 0; height: 42px; 
             background: var(--input-bg); 
             border: 1px solid var(--input-border); 
             border-radius: 12px; 
-            padding: 0 15px; /* Паддинг только по бокам */
-            color: var(--text-main); 
-            font-size: 15px; 
+            padding: 0 15px; 
+            color: var(--text-main); font-size: 15px; 
             box-shadow: var(--shadow);
         }
         .search-box:focus { border-color: var(--accent-main); }
@@ -120,61 +115,25 @@
 
         /* --- THEME TOGGLE (Встроенный в хедер) --- */
         .theme-toggle-btn {
-            width: 42px;          /* Квадратная, высота как у инпута */
-            height: 42px;
+            width: 42px; height: 42px;
             background: var(--toggle-bg);
-            border-radius: 12px;  /* Такой же радиус как у инпута */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center;
             box-shadow: var(--shadow);
             cursor: pointer;
             font-size: 20px;
             border: 1px solid var(--tag-border);
             color: var(--toggle-icon);
             user-select: none;
-            flex-shrink: 0;       /* Не сжимать */
+            flex-shrink: 0;
             -webkit-tap-highlight-color: transparent;
             transition: transform 0.2s, background 0.3s;
         }
         .theme-toggle-btn:active { transform: scale(0.9); }
 
-
-        .tags-wrapper { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .tags-wrapper::-webkit-scrollbar { display: none; }
-        .tag { 
-            white-space: nowrap; padding: 8px 16px; 
-            background: var(--tag-bg); border: 1px solid var(--tag-border);
-            border-radius: 30px; 
-            font-size: 13px; font-weight: 600; color: var(--text-sec); 
-            cursor: pointer; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .tag.active { background: var(--accent-main); color: #fff; border-color: var(--accent-main); box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3); }
-
-        /* --- MAIN CONTENT --- */
-        .main-content { padding: 20px 15px; padding-top: 20px; }
-
-        /* --- SPECIAL BUTTONS --- */
-        /* Кнопку темы на главной тоже нужно разместить красиво */
-        /* Но раз она теперь в хедере, который появляется при скролле списка, 
-           давай оставим ее "фиксед" ТОЛЬКО когда мы на главной? 
-           Нет, проще сделать отдельную плавающую только для главной, 
-           а в списке использовать ту что в хедере. */
-           
-        /* ПРАВКА: Скрываем кнопку в хедере, если мы на главной. 
-           На главной пусть висит в углу, как раньше, но аккуратнее. 
-           ИЛИ ПРОЩЕ: Оставляем ее всегда в хедере, а хедер показываем всегда? 
-           Нет, ты хотел чистоту. 
-           
-           Давай сделаем так: Кнопка в хедере всегда есть. 
-           А на главной добавим отдельную кнопку в углу, которая исчезает при переходе в список. 
-        */
-
+        /* --- FLOATING THEME BTN (Для главной) --- */
         #floatingThemeBtn {
-            position: fixed;
-            top: 15px;
-            right: 15px;
+            position: fixed; top: 15px; right: 15px;
             width: 44px; height: 44px;
             border-radius: 50%;
             background: var(--toggle-bg);
@@ -187,17 +146,28 @@
             cursor: pointer;
         }
 
+        .tags-wrapper { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .tags-wrapper::-webkit-scrollbar { display: none; }
+        .tag { 
+            white-space: nowrap; padding: 8px 16px; 
+            background: var(--tag-bg); border: 1px solid var(--tag-border);
+            border-radius: 30px; 
+            font-size: 13px; font-weight: 600; color: var(--text-sec); 
+            cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .tag.active { background: var(--accent-main); color: #fff; border-color: var(--accent-main); box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { padding: 20px 15px; padding-top: 20px; }
+
         .special-cards-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; margin-top: 50px; }
 
         .special-card {
             border-radius: 20px !important;
             padding: 25px 20px;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center;
             transition: transform 0.1s;
             min-height: 100px;
             box-shadow: var(--shadow);
@@ -237,8 +207,7 @@
         #homeTilesContainer { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); 
-            gap: 15px; 
-            margin-top: 10px;
+            gap: 15px; margin-top: 10px;
         }
         
         .category-tile {
@@ -284,6 +253,9 @@
         }
         .post-card:active { border-color: var(--accent-main); opacity: 0.8; }
         .post-title { font-size: 15px; line-height: 1.5; font-weight: 600; color: var(--text-main); }
+        
+        /* Класс для подсветки текста при поиске */
+        .highlight { background: var(--highlight-bg); color: inherit; padding: 0 2px; border-radius: 4px; }
 
         /* --- BOTTOM SHEET --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, 0.6); z-index: 500; opacity: 0; visibility: hidden; transition: opacity 0.2s; backdrop-filter: blur(4px); }
@@ -306,16 +278,27 @@
         .sheet-category { color: var(--accent-main); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
         .sheet-title { font-size: 22px; font-weight: 800; line-height: 1.3; margin-bottom: 30px; color: var(--text-main); }
         
+        .sheet-actions { display: flex; gap: 10px; margin-bottom: 30px; }
+
         .btn-main { 
-            display: block; width: 100%; text-align: center; 
+            flex: 2; text-align: center; 
             background: var(--accent-main); color: #fff; 
             font-weight: 700; font-size: 16px; 
-            padding: 18px; border-radius: 16px; border: none; 
-            margin-bottom: 30px; cursor: pointer; 
+            padding: 16px; border-radius: 16px; border: none; 
+            cursor: pointer; 
             transition: transform 0.1s; 
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
         .btn-main:active { transform: scale(0.97); }
+        
+        .btn-share {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            background: var(--bg-card); color: var(--accent-main);
+            border: 2px solid var(--accent-main);
+            border-radius: 16px; font-weight: 700; font-size: 16px;
+            cursor: pointer; transition: background 0.1s;
+        }
+        .btn-share:active { background: var(--accent-light); }
         
         .related-section { border-top: 1px solid var(--tag-border); padding-top: 25px; }
         .related-header { font-size: 13px; color: var(--text-sec); margin-bottom: 15px; font-weight: 700; text-transform: uppercase; }
@@ -341,7 +324,7 @@
             margin-top: 25px; width: 100%; 
             display: flex; align-items: center; justify-content: center; gap: 10px; 
         }
-        .empty-state { text-align: center; color: var(--text-sec); margin-top: 80px; font-size: 15px; font-weight: 500; }
+        .empty-state { text-align: center; color: var(--text-sec); margin-top: 60px; font-size: 15px; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -385,7 +368,12 @@
         <div class="sheet-handle"></div>
         <div class="sheet-category" id="sheetCategory">РУБРИКА</div>
         <div class="sheet-title" id="sheetTitle">Заголовок статьи</div>
-        <button class="btn-main" id="readBtn">ЧИТАТЬ ПОСТ В КАНАЛЕ ➤</button>
+        
+        <div class="sheet-actions">
+            <button class="btn-main" id="readBtn">ЧИТАТЬ ➤</button>
+            <button class="btn-share" id="shareBtn">📤</button>
+        </div>
+
         <div class="related-section">
             <div class="related-header">Также по этой теме:</div>
             <div id="relatedContainer"></div>
@@ -398,14 +386,13 @@
         tg.ready();
         tg.expand();
 
-        const STATE_KEY = 'dr_erokhin_state_v6';
+        const STATE_KEY = 'dr_erokhin_state_v7';
         const STATE_TTL = 15 * 60 * 1000;
         const BOOKING_URL = "https://n1100041.yclients.com";
         const ABOUT_CATEGORY_NAME = "📋 О Враче & Цены"; 
         const THEME_KEY = 'dr_erokhin_theme';
 
         // --- ЛОГИКА ТЕМЫ ---
-        // Теперь у нас две кнопки переключения (одна на главной, одна в хедере)
         const floatingThemeBtn = document.getElementById('floatingThemeBtn');
         const headerThemeBtn = document.getElementById('headerThemeBtn');
         const rootElement = document.documentElement;
@@ -421,10 +408,8 @@
                 tg.setHeaderColor('#F0F4F8');
                 tg.setBackgroundColor('#F0F4F8');
             }
-            // Обновляем обе кнопки
             floatingThemeBtn.innerText = icon;
             headerThemeBtn.innerText = icon;
-            
             localStorage.setItem(THEME_KEY, theme);
         }
 
@@ -684,6 +669,8 @@
         const specialCardsWrapper = document.getElementById('specialCardsWrapper');
         const bookingBtn = document.getElementById('bookingBtn');
         const aboutBtn = document.getElementById('aboutBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const readBtn = document.getElementById('readBtn');
 
         function saveState() {
             try {
@@ -721,7 +708,6 @@
             homeTilesContainer.style.display = 'grid';
             mainContent.style.paddingTop = '20px';
             specialCardsWrapper.style.display = 'flex';
-            // Показываем плавающую кнопку, когда на главной
             floatingThemeBtn.style.display = 'flex';
             window.scrollTo({ top: 0 });
             tg.HapticFeedback.impactOccurred('light');
@@ -733,7 +719,6 @@
             currentCategory = category;
             homeTilesContainer.style.display = 'none';
             specialCardsWrapper.style.display = 'none';
-            // Скрываем плавающую кнопку, теперь есть кнопка в хедере
             floatingThemeBtn.style.display = 'none';
             listHeader.style.display = 'block';
             listViewContainer.style.display = 'block';
@@ -800,8 +785,17 @@
                 return catMatch && searchMatch;
             });
 
+            // 1. УМНАЯ ЗАГЛУШКА
             if (filtered.length === 0) {
-                postsContainer.innerHTML = '<div class="empty-state">Ничего не найдено</div>';
+                postsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🤔</div>
+                        <div>По запросу "<b>${searchQuery}</b>" материалов пока нет.</div>
+                        <div style="margin-top: 5px; opacity: 0.7; font-size: 13px;">Но это можно обсудить лично.</div>
+                        <button class="btn-main" style="margin-top: 20px; font-size: 14px; padding: 12px; width: auto; display: inline-block;" onclick="tg.openLink('${BOOKING_URL}')">
+                            Записаться на разбор ➤
+                        </button>
+                    </div>`;
                 return;
             }
 
@@ -815,7 +809,15 @@
                 const div = document.createElement('div');
                 div.className = animate ? 'post-card glide-entry' : 'post-card';
                 if (animate) div.style.animationDelay = `${0.05 + (animationIndex * 0.03)}s`;
-                div.innerHTML = `<div class="post-title">${item.t}</div>`;
+                
+                // 2. ПОДСВЕТКА ПОИСКА
+                let titleHtml = item.t;
+                if (searchQuery) {
+                    const regex = new RegExp(`(${searchQuery})`, 'gi');
+                    titleHtml = item.t.replace(regex, '<span class="highlight">$1</span>');
+                }
+                
+                div.innerHTML = `<div class="post-title">${titleHtml}</div>`;
                 div.onclick = () => { openSheet(item); };
                 postsContainer.appendChild(div);
                 animationIndex++;
@@ -831,7 +833,6 @@
         const postSheet = document.getElementById('postSheet');
         const sheetTitle = document.getElementById('sheetTitle');
         const sheetCategory = document.getElementById('sheetCategory');
-        const readBtn = document.getElementById('readBtn');
         const relatedContainer = document.getElementById('relatedContainer');
         const upsellBtn = document.getElementById('upsellBtn');
 
@@ -845,6 +846,14 @@
                 tg.HapticFeedback.impactOccurred('light');
                 saveState();
                 tg.openTelegramLink(item.u);
+            };
+
+            // 3. ЛОГИКА КНОПКИ SHARE
+            shareBtn.onclick = () => {
+                tg.HapticFeedback.impactOccurred('light');
+                // Используем универсальную ссылку для шеринга в ТГ
+                const shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(item.u) + '&text=' + encodeURIComponent(item.t);
+                tg.openTelegramLink(shareUrl);
             };
             
             upsellBtn.onclick = () => {
