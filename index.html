@@ -27,7 +27,7 @@
             --toggle-bg: #FFFFFF;
             --toggle-icon: #007AFF;
             --toggle-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            --highlight-bg: rgba(255, 215, 0, 0.4); /* Цвет подсветки поиска */
+            --highlight-bg: rgba(255, 215, 0, 0.4);
         }
 
         /* --- DARK THEME OVERRIDES --- */
@@ -50,8 +50,8 @@
             --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             --toggle-bg: #1e293b;
             --toggle-icon: #FFD700;
-            --toggle-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-            --highlight-bg: rgba(255, 215, 0, 0.6); /* Чуть ярче для темной темы */
+            --toggle-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            --highlight-bg: rgba(255, 215, 0, 0.6);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
@@ -72,19 +72,21 @@
         .glide-entry { opacity: 0; animation: glideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         @keyframes shimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(200%) skewX(-15deg); } }
 
-        /* --- HEADER --- */
+        /* --- HEADER (FIXED & GLOBAL) --- */
         .header-container {
             position: fixed; top: 0; left: 0; width: 100%;
             background: var(--bg-body-start);
             z-index: 100;
             padding: 15px 15px 10px 15px; 
             border-bottom: 1px solid rgba(0,0,0,0.05);
-            display: none;
+            display: block; /* Всегда виден */
+            transition: background 0.3s ease;
         }
         
         .header-top-row { 
             display: flex; align-items: center; width: 100%;
-            margin-bottom: 12px; gap: 10px;
+            margin-bottom: 0px; /* Убрали отступ, так как теги скрыты по дефолту */
+            gap: 10px;
         }
 
         .back-btn { 
@@ -94,7 +96,8 @@
             color: var(--accent-main); 
             font-weight: 600; font-size: 14px; 
             cursor: pointer; 
-            display: flex; align-items: center; justify-content: center;
+            display: none; /* Скрыта по умолчанию (на главной) */
+            align-items: center; justify-content: center;
             box-shadow: var(--shadow);
             border: 1px solid var(--tag-border);
             flex-shrink: 0; 
@@ -113,7 +116,6 @@
         .search-box:focus { border-color: var(--accent-main); }
         .search-box::placeholder { color: var(--text-sec); }
 
-        /* --- THEME TOGGLE (Встроенный в хедер) --- */
         .theme-toggle-btn {
             width: 42px; height: 42px;
             background: var(--toggle-bg);
@@ -131,22 +133,13 @@
         }
         .theme-toggle-btn:active { transform: scale(0.9); }
 
-        /* --- FLOATING THEME BTN (Для главной) --- */
-        #floatingThemeBtn {
-            position: fixed; top: 15px; right: 15px;
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: var(--toggle-bg);
-            border: 1px solid var(--tag-border);
-            box-shadow: var(--shadow);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px;
-            z-index: 90;
-            color: var(--toggle-icon);
-            cursor: pointer;
+        /* Контейнер тегов (появляется только в категориях) */
+        .tags-wrapper { 
+            display: none; /* Скрыт на главной */
+            gap: 8px; overflow-x: auto; 
+            padding-top: 12px; padding-bottom: 5px; 
+            scrollbar-width: none; 
         }
-
-        .tags-wrapper { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .tags-wrapper::-webkit-scrollbar { display: none; }
         .tag { 
             white-space: nowrap; padding: 8px 16px; 
@@ -158,9 +151,10 @@
         .tag.active { background: var(--accent-main); color: #fff; border-color: var(--accent-main); box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3); }
 
         /* --- MAIN CONTENT --- */
-        .main-content { padding: 20px 15px; padding-top: 20px; }
+        /* Отступ сверху увеличен, так как хедер теперь всегда есть */
+        .main-content { padding: 85px 15px 20px 15px; }
 
-        .special-cards-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; margin-top: 50px; }
+        .special-cards-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
 
         .special-card {
             border-radius: 20px !important;
@@ -229,7 +223,7 @@
         /* --- LIST VIEW --- */
         #listViewContainer { display: none; }
         .section-header { 
-            margin-top: 30px; margin-bottom: 15px; 
+            margin-top: 10px; margin-bottom: 15px; 
             display: flex; align-items: center; 
             color: var(--accent-deep); 
             font-weight: 800; font-size: 16px; 
@@ -254,7 +248,6 @@
         .post-card:active { border-color: var(--accent-main); opacity: 0.8; }
         .post-title { font-size: 15px; line-height: 1.5; font-weight: 600; color: var(--text-main); }
         
-        /* Класс для подсветки текста при поиске */
         .highlight { background: var(--highlight-bg); color: inherit; padding: 0 2px; border-radius: 4px; }
 
         /* --- BOTTOM SHEET --- */
@@ -329,12 +322,10 @@
 </head>
 <body>
 
-    <div id="floatingThemeBtn">☀️</div>
-
     <div class="header-container" id="listHeader">
         <div class="header-top-row">
-            <div class="back-btn" id="backToHomeBtn">← Назад</div>
-            <input type="text" id="searchInput" class="search-box" placeholder="Поиск...">
+            <div class="back-btn" id="backToHomeBtn">←</div>
+            <input type="text" id="searchInput" class="search-box" placeholder="Поиск симптома или темы...">
             <div class="theme-toggle-btn" id="headerThemeBtn">☀️</div>
         </div>
         <div class="tags-wrapper" id="tagsContainer"></div>
@@ -386,14 +377,13 @@
         tg.ready();
         tg.expand();
 
-        const STATE_KEY = 'dr_erokhin_state_v7';
+        const STATE_KEY = 'dr_erokhin_state_v8';
         const STATE_TTL = 15 * 60 * 1000;
         const BOOKING_URL = "https://n1100041.yclients.com";
         const ABOUT_CATEGORY_NAME = "📋 О Враче & Цены"; 
         const THEME_KEY = 'dr_erokhin_theme';
 
         // --- ЛОГИКА ТЕМЫ ---
-        const floatingThemeBtn = document.getElementById('floatingThemeBtn');
         const headerThemeBtn = document.getElementById('headerThemeBtn');
         const rootElement = document.documentElement;
 
@@ -408,7 +398,6 @@
                 tg.setHeaderColor('#F0F4F8');
                 tg.setBackgroundColor('#F0F4F8');
             }
-            floatingThemeBtn.innerText = icon;
             headerThemeBtn.innerText = icon;
             localStorage.setItem(THEME_KEY, theme);
         }
@@ -429,7 +418,6 @@
             applyTheme(newTheme);
         }
 
-        floatingThemeBtn.addEventListener('click', toggleTheme);
         headerThemeBtn.addEventListener('click', toggleTheme);
 
         // --- ДАННЫЕ ---
@@ -703,12 +691,15 @@
             currentCategory = null;
             searchQuery = "";
             searchInput.value = "";
-            listHeader.style.display = 'none';
+            
+            // На главной скрываем кнопку назад, показываем плитки
+            backToHomeBtn.style.display = 'none';
+            tagsContainer.style.display = 'none';
             listViewContainer.style.display = 'none';
+            
             homeTilesContainer.style.display = 'grid';
-            mainContent.style.paddingTop = '20px';
             specialCardsWrapper.style.display = 'flex';
-            floatingThemeBtn.style.display = 'flex';
+            
             window.scrollTo({ top: 0 });
             tg.HapticFeedback.impactOccurred('light');
             localStorage.removeItem(STATE_KEY);
@@ -717,12 +708,16 @@
         function switchToList(category, animate = true) {
             currentViewState = 'list';
             currentCategory = category;
+            
+            // В списке показываем кнопку назад, скрываем плитки
+            backToHomeBtn.style.display = 'flex';
+            tagsContainer.style.display = 'flex';
+            
             homeTilesContainer.style.display = 'none';
             specialCardsWrapper.style.display = 'none';
-            floatingThemeBtn.style.display = 'none';
-            listHeader.style.display = 'block';
+            
             listViewContainer.style.display = 'block';
-            mainContent.style.paddingTop = (listHeader.offsetHeight + 20) + 'px';
+            
             renderTags();
             filterAndRenderList(animate);
             if(animate) window.scrollTo({ top: 0 });
@@ -757,8 +752,13 @@
             tagsContainer.innerHTML = '';
             const homeTag = document.createElement('div');
             homeTag.className = 'tag';
-            homeTag.innerText = 'Главная';
-            homeTag.onclick = switchToHome;
+            homeTag.innerText = 'Все';
+            homeTag.onclick = () => {
+                 currentCategory = null; // Показать все
+                 renderTags();
+                 filterAndRenderList(true);
+            };
+            if(currentCategory === null) homeTag.classList.add('active');
             tagsContainer.appendChild(homeTag);
 
             uniqueCategoriesList.forEach(catData => {
@@ -780,7 +780,8 @@
             postsContainer.innerHTML = '';
             let animationIndex = 0;
             const filtered = db.filter(item => {
-                const catMatch = item.c === currentCategory;
+                // Если категория null, ищем везде. Если выбрана - фильтруем по ней
+                const catMatch = currentCategory ? item.c === currentCategory : true;
                 const searchMatch = item.t.toLowerCase().includes(searchQuery.toLowerCase());
                 return catMatch && searchMatch;
             });
@@ -799,10 +800,11 @@
                 return;
             }
 
+            // Заголовок секции (если мы не в конкретной категории, пишем "Результаты")
             const header = document.createElement('div');
             header.className = animate ? 'section-header glide-entry' : 'section-header';
             if(animate) header.style.animationDelay = '0.05s';
-            header.innerText = currentCategory;
+            header.innerText = currentCategory ? currentCategory : (searchQuery ? `Результаты поиска: ${filtered.length}` : 'Все материалы');
             postsContainer.appendChild(header);
 
             filtered.forEach(item => {
@@ -824,8 +826,17 @@
             });
         }
 
+        // ГЛОБАЛЬНЫЙ ПОИСК С ГЛАВНОЙ
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value;
+            
+            // Если мы на главной и начали печатать -> переключаемся в режим списка (глобальный поиск)
+            if (currentViewState === 'home' && searchQuery.length > 0) {
+                switchToList(null, true); // null = искать везде
+            } 
+            // Если стерли всё и были на главной изначально -> можно вернуть главную (опционально)
+            // Но лучше оставить в списке, чтобы не скакало.
+            
             filterAndRenderList(true);
         });
 
@@ -851,7 +862,6 @@
             // 3. ЛОГИКА КНОПКИ SHARE
             shareBtn.onclick = () => {
                 tg.HapticFeedback.impactOccurred('light');
-                // Используем универсальную ссылку для шеринга в ТГ
                 const shareUrl = 'https://t.me/share/url?url=' + encodeURIComponent(item.u) + '&text=' + encodeURIComponent(item.t);
                 tg.openTelegramLink(shareUrl);
             };
