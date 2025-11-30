@@ -7,29 +7,56 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            /* --- ЦВЕТОВАЯ ПАЛИТРА --- */
-            --bg-gradient-start: #F0F4F8; /* Светлый холодный серый */
-            --bg-gradient-end: #FFFFFF;   /* Чистый белый */
-            
-            --card-bg: #FFFFFF;           
-            --text-main: #102A43;         /* Глубокий темно-синий */
-            --text-sec: #627D98;          /* Спокойный серо-голубой */
-            
-            --accent-main: #007AFF;       /* Яркий голубой (Action) */
-            --accent-deep: #102A43;       /* Глубокий синий (Foundation) */
-            --accent-light: #E3F2FD;      
-            
-            --radius: 20px;
-            /* Усиленная тень для лучшего разделения слоев */
-            --shadow: 0 8px 24px rgba(16, 42, 67, 0.08); 
+            /* --- LIGHT THEME (Default) --- */
+            --bg-body-start: #F0F4F8; 
+            --bg-body-end: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --text-main: #102A43;
+            --text-sec: #627D98;
+            --input-bg: #FFFFFF;
+            --input-border: #D9E2EC;
+            --tag-bg: #FFFFFF;
+            --tag-border: #D9E2EC;
+            --sheet-handle: #D9E2EC;
+            --related-bg: #F5F7FA;
+            --related-active: #E3F2FD;
+            --accent-main: #007AFF;
+            --accent-deep: #102A43;
+            --accent-light: #E3F2FD;
+            --shadow: 0 8px 24px rgba(16, 42, 67, 0.08);
+            --toggle-bg: #FFFFFF;
+            --toggle-icon: #007AFF;
+            --toggle-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Тень как у других кнопок */
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
+        /* --- DARK THEME OVERRIDES --- */
+        [data-theme="dark"] {
+            --bg-body-start: #0f172a; 
+            --bg-body-end: #1e293b;
+            --bg-card: #1e293b;
+            --text-main: #F1F5F9;
+            --text-sec: #94A3B8;
+            --input-bg: #334155;
+            --input-border: #475569;
+            --tag-bg: #1e293b;
+            --tag-border: #475569;
+            --sheet-handle: #475569;
+            --related-bg: #334155;
+            --related-active: #475569;
+            --accent-main: #60A5FA;   
+            --accent-deep: #F8FAFC;   
+            --accent-light: #1e293b; 
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --toggle-bg: #1e293b; /* Цвет как у кнопки назад */
+            --toggle-icon: #FFD700;
+            --toggle-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
         
         body {
-            /* ГРАДИЕНТНЫЙ ФОН ДЛЯ ОБЪЕМА */
-            background: linear-gradient(to bottom, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-            background-attachment: fixed; /* Чтобы градиент не скроллился */
+            background: linear-gradient(to bottom, var(--bg-body-start) 0%, var(--bg-body-end) 100%);
+            background-attachment: fixed;
             color: var(--text-main);
             padding-bottom: 40px;
             opacity: 0; 
@@ -41,54 +68,86 @@
         @keyframes glideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .glide-entry { opacity: 0; animation: glideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        
         @keyframes shimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(200%) skewX(-15deg); } }
 
         /* --- HEADER --- */
         .header-container {
             position: fixed; top: 0; left: 0; width: 100%;
-            background: rgba(240, 244, 248, 0.9); /* Полупрозрачный под цвет верха фона */
-            backdrop-filter: blur(12px);
+            background: var(--bg-body-start);
             z-index: 100;
-            padding: 15px 15px 10px 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            padding: 15px 15px 10px 15px; /* Вернули нормальные отступы */
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             display: none;
         }
-        .header-top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         
+        .header-top-row { 
+            display: flex; 
+            align-items: center; /* Выравнивание по центру по вертикали */
+            width: 100%;
+            margin-bottom: 12px;
+            gap: 10px; /* Равное расстояние между элементами */
+        }
+
         .back-btn { 
-            padding: 10px 15px; 
-            background: #fff; 
+            padding: 0 16px; /* Убрал верт паддинг, задал высоту */
+            height: 42px;    /* Фиксированная высота как у инпута */
+            background: var(--bg-card); 
             border-radius: 12px; 
             color: var(--accent-main); 
             font-weight: 600; font-size: 14px; 
-            cursor: pointer; display: flex; align-items: center; 
+            cursor: pointer; 
+            display: flex; align-items: center; justify-content: center;
             box-shadow: var(--shadow);
-            transition: transform 0.1s;
+            border: 1px solid var(--tag-border);
+            flex-shrink: 0; 
         }
         .back-btn:active { transform: scale(0.95); }
         
         .search-box { 
             flex: 1; 
-            background: #fff; 
-            border: 1px solid #D9E2EC; 
+            min-width: 0; 
+            height: 42px; /* Фиксированная высота */
+            background: var(--input-bg); 
+            border: 1px solid var(--input-border); 
             border-radius: 12px; 
-            padding: 12px 15px; 
+            padding: 0 15px; /* Паддинг только по бокам */
             color: var(--text-main); 
             font-size: 15px; 
             box-shadow: var(--shadow);
         }
         .search-box:focus { border-color: var(--accent-main); }
-        .search-box::placeholder { color: #9AA5B1; }
+        .search-box::placeholder { color: var(--text-sec); }
+
+        /* --- THEME TOGGLE (Встроенный в хедер) --- */
+        .theme-toggle-btn {
+            width: 42px;          /* Квадратная, высота как у инпута */
+            height: 42px;
+            background: var(--toggle-bg);
+            border-radius: 12px;  /* Такой же радиус как у инпута */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            font-size: 20px;
+            border: 1px solid var(--tag-border);
+            color: var(--toggle-icon);
+            user-select: none;
+            flex-shrink: 0;       /* Не сжимать */
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .theme-toggle-btn:active { transform: scale(0.9); }
+
 
         .tags-wrapper { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .tags-wrapper::-webkit-scrollbar { display: none; }
         .tag { 
             white-space: nowrap; padding: 8px 16px; 
-            background: #fff; border: 1px solid #D9E2EC;
+            background: var(--tag-bg); border: 1px solid var(--tag-border);
             border-radius: 30px; 
             font-size: 13px; font-weight: 600; color: var(--text-sec); 
-            cursor: pointer; transition: all 0.2s; 
+            cursor: pointer; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
         .tag.active { background: var(--accent-main); color: #fff; border-color: var(--accent-main); box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3); }
@@ -97,10 +156,41 @@
         .main-content { padding: 20px 15px; padding-top: 20px; }
 
         /* --- SPECIAL BUTTONS --- */
-        .special-cards-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+        /* Кнопку темы на главной тоже нужно разместить красиво */
+        /* Но раз она теперь в хедере, который появляется при скролле списка, 
+           давай оставим ее "фиксед" ТОЛЬКО когда мы на главной? 
+           Нет, проще сделать отдельную плавающую только для главной, 
+           а в списке использовать ту что в хедере. */
+           
+        /* ПРАВКА: Скрываем кнопку в хедере, если мы на главной. 
+           На главной пусть висит в углу, как раньше, но аккуратнее. 
+           ИЛИ ПРОЩЕ: Оставляем ее всегда в хедере, а хедер показываем всегда? 
+           Нет, ты хотел чистоту. 
+           
+           Давай сделаем так: Кнопка в хедере всегда есть. 
+           А на главной добавим отдельную кнопку в углу, которая исчезает при переходе в список. 
+        */
+
+        #floatingThemeBtn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--toggle-bg);
+            border: 1px solid var(--tag-border);
+            box-shadow: var(--shadow);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            z-index: 90;
+            color: var(--toggle-icon);
+            cursor: pointer;
+        }
+
+        .special-cards-wrapper { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; margin-top: 50px; }
 
         .special-card {
-            border-radius: var(--radius);
+            border-radius: 20px !important;
             padding: 25px 20px;
             cursor: pointer;
             position: relative;
@@ -115,7 +205,6 @@
         }
         .special-card:active { transform: scale(0.98); }
 
-        /* Карточка 1: Яркая синяя (Запись) */
         .card-action-blue {
             background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
             color: white;
@@ -126,12 +215,11 @@
             animation: shimmer 3.5s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
-        /* Карточка 2: Глубокая темная (О враче) */
         .card-deep-blue {
             background: linear-gradient(135deg, #102A43 0%, #243B53 100%);
             color: white;
         }
-        .card-deep-blue .sp-desc { color: #D9E2EC; /* Светло-серый текст для контраста */ }
+        .card-deep-blue .sp-desc { color: #D9E2EC; }
 
         .sp-title {
             font-weight: 800; font-size: 19px;
@@ -154,15 +242,14 @@
         }
         
         .category-tile {
-            background: var(--card-bg);
-            border-radius: var(--radius); 
+            background: var(--bg-card);
+            border-radius: 20px !important;
             padding: 25px 20px; 
             cursor: pointer;
             position: relative; overflow: hidden; 
             display: flex; flex-direction: column; justify-content: space-between;
             min-height: 140px;
-            transition: transform 0.1s;
-            box-shadow: var(--shadow); /* Тень теперь четче на градиенте */
+            box-shadow: var(--shadow);
             border: 1px solid transparent;
         }
         .category-tile:active { transform: scale(0.97); border-color: var(--accent-main); }
@@ -187,34 +274,35 @@
         }
         .posts-list { display: flex; flex-direction: column; gap: 12px; }
         .post-card { 
-            background-color: var(--card-bg); 
+            background-color: var(--bg-card); 
             padding: 18px; 
-            border-radius: 16px; 
+            border-radius: 16px !important;
             cursor: pointer; 
             position: relative; overflow: hidden; 
             border: 1px solid transparent; 
             box-shadow: var(--shadow);
-            transition: background 0.2s;
         }
-        .post-card:active { background-color: #F0F4F8; border-color: var(--accent-main); }
+        .post-card:active { border-color: var(--accent-main); opacity: 0.8; }
         .post-title { font-size: 15px; line-height: 1.5; font-weight: 600; color: var(--text-main); }
 
         /* --- BOTTOM SHEET --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 42, 67, 0.5); z-index: 500; opacity: 0; visibility: hidden; transition: opacity 0.2s; backdrop-filter: blur(4px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0, 0.6); z-index: 500; opacity: 0; visibility: hidden; transition: opacity 0.2s; backdrop-filter: blur(4px); }
         .modal-overlay.active { opacity: 1; visibility: visible; }
+        
         .bottom-sheet { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
-            background-color: var(--card-bg); 
+            background-color: var(--bg-card); 
             border-top-left-radius: 25px; border-top-right-radius: 25px; 
             padding: 25px 20px 45px 20px; 
             z-index: 600; 
             transform: translateY(100%); 
-            transition: transform 0.35s cubic-bezier(0.15, 0.85, 0.25, 1.1); /* Чуть более живая анимация */
-            box-shadow: 0 -10px 50px rgba(0,0,0,0.15); 
+            transition: transform 0.35s cubic-bezier(0.15, 0.85, 0.25, 1.1);
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.3); 
             max-height: 85vh; overflow-y: auto; 
+            border-top: 1px solid var(--tag-border);
         }
         .bottom-sheet.active { transform: translateY(0); }
-        .sheet-handle { width: 40px; height: 5px; background: #D9E2EC; border-radius: 10px; margin: 0 auto 25px auto; }
+        .sheet-handle { width: 40px; height: 5px; background: var(--sheet-handle); border-radius: 10px; margin: 0 auto 25px auto; }
         .sheet-category { color: var(--accent-main); font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
         .sheet-title { font-size: 22px; font-weight: 800; line-height: 1.3; margin-bottom: 30px; color: var(--text-main); }
         
@@ -225,14 +313,15 @@
             padding: 18px; border-radius: 16px; border: none; 
             margin-bottom: 30px; cursor: pointer; 
             transition: transform 0.1s; 
-            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
         .btn-main:active { transform: scale(0.97); }
         
-        .related-section { border-top: 1px solid #F0F4F8; padding-top: 25px; }
-        .related-header { font-size: 13px; color: #9AA5B1; margin-bottom: 15px; font-weight: 700; text-transform: uppercase; }
+        .related-section { border-top: 1px solid var(--tag-border); padding-top: 25px; }
+        .related-header { font-size: 13px; color: var(--text-sec); margin-bottom: 15px; font-weight: 700; text-transform: uppercase; }
+        
         .related-item { 
-            background: #F5F7FA; 
+            background: var(--related-bg); 
             padding: 14px 18px; 
             border-radius: 12px; 
             margin-bottom: 10px; 
@@ -240,12 +329,12 @@
             display: flex; align-items: center; justify-content: space-between; 
             font-weight: 600; 
         }
-        .related-item:active { background: #E3F2FD; }
+        .related-item:active { background: var(--related-active); }
         .related-arrow { color: var(--accent-main); font-weight: bold; }
         
         .upsell-btn { 
             background: var(--accent-light); 
-            border: 1px solid rgba(0, 122, 255, 0.1); 
+            border: 1px solid var(--tag-border); 
             color: var(--accent-main); 
             padding: 16px; border-radius: 16px; text-align: center; 
             font-size: 15px; font-weight: 700; 
@@ -257,10 +346,13 @@
 </head>
 <body>
 
+    <div id="floatingThemeBtn">☀️</div>
+
     <div class="header-container" id="listHeader">
         <div class="header-top-row">
             <div class="back-btn" id="backToHomeBtn">← Назад</div>
-            <input type="text" id="searchInput" class="search-box" placeholder="Поиск (напр. Грыжа)...">
+            <input type="text" id="searchInput" class="search-box" placeholder="Поиск...">
+            <div class="theme-toggle-btn" id="headerThemeBtn">☀️</div>
         </div>
         <div class="tags-wrapper" id="tagsContainer"></div>
     </div>
@@ -270,7 +362,7 @@
         <div class="special-cards-wrapper" id="specialCardsWrapper">
             <div class="special-card card-action-blue glide-entry" id="bookingBtn" style="animation-delay: 0.05s;">
                 <div class="sp-title">📅 Записаться на прием</div>
-                <div class="sp-desc">Запись на очную консультацию в Москве</div>
+                <div class="sp-desc">Москва. Очная консультация и терапия. Жми.</div>
                 <div class="sp-bg-icon">🩺</div>
             </div>
 
@@ -305,18 +397,58 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        // Цвет хедера подстраиваем под начало градиента
-        tg.setHeaderColor('#F0F4F8');
-        tg.setBackgroundColor('#F0F4F8');
 
-        const STATE_KEY = 'dr_erokhin_state_v2'; // Версия 2
+        const STATE_KEY = 'dr_erokhin_state_v6';
         const STATE_TTL = 15 * 60 * 1000;
         const BOOKING_URL = "https://n1100041.yclients.com";
-        // Название категории, куда ведет вторая кнопка
         const ABOUT_CATEGORY_NAME = "📋 О Враче & Цены"; 
+        const THEME_KEY = 'dr_erokhin_theme';
 
+        // --- ЛОГИКА ТЕМЫ ---
+        // Теперь у нас две кнопки переключения (одна на главной, одна в хедере)
+        const floatingThemeBtn = document.getElementById('floatingThemeBtn');
+        const headerThemeBtn = document.getElementById('headerThemeBtn');
+        const rootElement = document.documentElement;
+
+        function applyTheme(theme) {
+            const icon = theme === 'dark' ? '🌙' : '☀️';
+            if (theme === 'dark') {
+                rootElement.setAttribute('data-theme', 'dark');
+                tg.setHeaderColor('#0f172a');
+                tg.setBackgroundColor('#0f172a');
+            } else {
+                rootElement.removeAttribute('data-theme');
+                tg.setHeaderColor('#F0F4F8');
+                tg.setBackgroundColor('#F0F4F8');
+            }
+            // Обновляем обе кнопки
+            floatingThemeBtn.innerText = icon;
+            headerThemeBtn.innerText = icon;
+            
+            localStorage.setItem(THEME_KEY, theme);
+        }
+
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            applyTheme('dark');
+        } else {
+            applyTheme('light');
+        }
+
+        function toggleTheme() {
+            tg.HapticFeedback.impactOccurred('medium');
+            const current = rootElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+
+        floatingThemeBtn.addEventListener('click', toggleTheme);
+        headerThemeBtn.addEventListener('click', toggleTheme);
+
+        // --- ДАННЫЕ ---
         const db = [
-            // 🦴 Позвоночник, Спина и Осанка
             { c: "🦴 Позвоночник & Осанка", t: "ОСАНКА КРЕВЕТКИ: тихий убийца", u: "https://t.me/c/1903289449/532" },
             { c: "🦴 Позвоночник & Осанка", t: "ВЫПРЯМИТЕ СПИНУ (осанка влияет на дыхание)", u: "https://t.me/c/1903289449/483" },
             { c: "🦴 Позвоночник & Осанка", t: "ТЫ СЛИШКОМ ДОЛГО СИДИШЬ", u: "https://t.me/c/1903289449/447" },
@@ -346,8 +478,6 @@
             { c: "🦴 Позвоночник & Осанка", t: "Про боль в копчике", u: "https://t.me/c/1903289449/357" },
             { c: "🦴 Позвоночник & Осанка", t: "Кокцигодиния (Часть 1)", u: "https://t.me/c/1903289449/167" },
             { c: "🦴 Позвоночник & Осанка", t: "Кокцигодиния (Часть 2)", u: "https://t.me/c/1903289449/168" },
-
-            // 🤕 Голова, Шея и Челюсть (ВНЧС)
             { c: "🤕 Голова & Шея", t: "ЧТО ОЗНАЧАЕТ ХРУСТ В ШЕЕ?", u: "https://t.me/c/1903289449/503" },
             { c: "🤕 Голова & Шея", t: "ТЯНЕТ ШЕЮ И БОЛИТ ЗАТЫЛОК?", u: "https://t.me/c/1903289449/529" },
             { c: "🤕 Голова & Шея", t: "ПОЗАБОТЬСЯ О СВОЕЙ ШЕЕ!", u: "https://t.me/c/1903289449/416" },
@@ -374,8 +504,6 @@
             { c: "🤕 Голова & Шея", t: "Боль в челюсти при жевании (старый пост)", u: "https://t.me/c/1903289449/262" },
             { c: "🤕 Голова & Шея", t: "БОУНСМЕШИНГ: смертельно опасный тренд", u: "https://t.me/c/1903289449/525" },
             { c: "🤕 Голова & Шея", t: "Хочешь убрать второй подбородок без операций?", u: "https://t.me/c/1903289449/438" },
-
-            // 💪 Руки и Ноги
             { c: "💪 Руки & Ноги", t: "ПОЧЕМУ НОЕТ ПЛЕЧО И КАК ЭТО ИСПРАВИТЬ?", u: "https://t.me/c/1903289449/512" },
             { c: "💪 Руки & Ноги", t: "МАНУАЛЬНАЯ ТЕРАПИЯ ПРИ АРТРОЗЕ (плечо)", u: "https://t.me/c/1903289449/386" },
             { c: "💪 Руки & Ноги", t: "ВОССТАНОВЛЕНИЕ ПЛЕЧЕВОГО СУСТАВА ПОСЛЕ ОПЕРАЦИИ", u: "https://t.me/c/1903289449/377" },
@@ -412,8 +540,6 @@
             { c: "💪 Руки & Ноги", t: "Вальгусная деформация стопы", u: "https://t.me/c/1903289449/375" },
             { c: "💪 Руки & Ноги", t: "Косточка на большом пальце ноги", u: "https://t.me/c/1903289449/128" },
             { c: "💪 Руки & Ноги", t: "ПЯТОЧНАЯ ШПОРА", u: "https://t.me/c/1903289449/427" },
-
-            // 🚑 Диагнозы и Серьезные Состояния
             { c: "🚑 Диагнозы & Грыжи", t: "ГРЫЖА ПОЗВОНОЧНИКА НЕ ПРИГОВОР К ОПЕРАЦИИ", u: "https://t.me/c/1903289449/444" },
             { c: "🚑 Диагнозы & Грыжи", t: "ГРЫЖА ПОЗВОНОЧНИКА не приговор к операции (старый)", u: "https://t.me/c/1903289449/421" },
             { c: "🚑 Диагнозы & Грыжи", t: "МЕЖПОЗВОНОЧНАЯ ГРЫЖА. ДЕЛАТЬ ЛИ ОПЕРАЦИЮ?", u: "https://t.me/c/1903289449/487" },
@@ -440,8 +566,6 @@
             { c: "🚑 Диагнозы & Грыжи", t: "Фасеточный синдром (Часть 1)", u: "https://t.me/c/1903289449/186" },
             { c: "🚑 Диагнозы & Грыжи", t: "Фасеточный синдром (Часть 2)", u: "https://t.me/c/1903289449/187" },
             { c: "🚑 Диагнозы & Грыжи", t: "Нестабильность позвоночника", u: "https://t.me/c/1903289449/246" },
-
-            // 🧬 Методы Лечения и Мифы
             { c: "🧬 Методы & Мифы", t: "ЧЕМ ВАМ ПОМОЖЕТ МАНУАЛЬНАЯ ТЕРАПИЯ?", u: "https://t.me/c/1903289449/467" },
             { c: "🧬 Методы & Мифы", t: "ЧТО С ВАМИ ДЕЛАЕТ МАНУАЛЬНЫЙ ТЕРАПЕВТ? (Разбор техник)", u: "https://t.me/c/1903289449/488" },
             { c: "🧬 Методы & Мифы", t: "МАНУАЛЬНАЯ ТЕРАПИЯ VS ОСТЕОПАТИЯ (Часть 1)", u: "https://t.me/c/1903289449/397" },
@@ -467,8 +591,6 @@
             { c: "🧬 Методы & Мифы", t: "МОЖНО ЛИ ХРУСТЕТЬ СУСТАВАМИ?", u: "https://t.me/c/1903289449/538" },
             { c: "🧬 Методы & Мифы", t: "Когда твои суставы - главный источник ASMR", u: "https://t.me/c/1903289449/346" },
             { c: "🧬 Методы & Мифы", t: "АНАТОМИЯ ДЕБИЛИЗМА (о гипертрофированной асимметрии)", u: "https://t.me/c/1903289449/362" },
-
-            // 🧘 Образ Жизни и Сон
             { c: "🧘 Образ Жизни", t: "КАК СОН ВЛИЯЕТ НА ПОЗВОНОЧНИК?", u: "https://t.me/c/1903289449/370" },
             { c: "🧘 Образ Жизни", t: "КАК ЛУЧШЕ СПАТЬ, ЧТОБЫ НЕ НАВРЕДИТЬ ПОЗВОНОЧНИКУ?", u: "https://t.me/c/1903289449/398" },
             { c: "🧘 Образ Жизни", t: "СОН НА БОКУ", u: "https://t.me/c/1903289449/376" },
@@ -499,8 +621,6 @@
             { c: "🧘 Образ Жизни", t: "Спаси себя от отеков после новогоднего застолья", u: "https://t.me/c/1903289449/266" },
             { c: "🧘 Образ Жизни", t: "Мучаешься от отеков? (Лимфодренаж)", u: "https://t.me/c/1903289449/371" },
             { c: "🧘 Образ Жизни", t: "Подкаст: КАК ЗАБОТИТЬСЯ О СВОЕМ ЗДОРОВЬЕ?", u: "https://t.me/c/1903289449/293" },
-
-            // 👶 Дети, Беременные и Пожилые
             { c: "👶 Дети & Беременные", t: "ОСОБЫЕ ДЕТИ, ОСОБЫЙ ПОДХОД (ДЦП и сколиоз)", u: "https://t.me/c/1903289449/481" },
             { c: "👶 Дети & Беременные", t: "Почему детки ходят на носочках", u: "https://t.me/c/1903289449/462" },
             { c: "👶 Дети & Беременные", t: "Популярный вопрос родителей (о детском спорте)", u: "https://t.me/c/1903289449/341" },
@@ -508,8 +628,6 @@
             { c: "👶 Дети & Беременные", t: "ВОССТАНОВЛЕНИЕ ПОСЛЕ РОДОВ", u: "https://t.me/c/1903289449/484" },
             { c: "👶 Дети & Беременные", t: "ДИАСТАЗ. ЧТО ЭТО ТАКОЕ И ПОЧЕМУ ОН ПОЯВЛЯЕТСЯ?", u: "https://t.me/c/1903289449/480" },
             { c: "👶 Дети & Беременные", t: "СУСТАВЫ ПОЖИЛЫХ ЛЮДЕЙ", u: "https://t.me/c/1903289449/367" },
-
-            // 📋 Организационное и О враче
             { c: "📋 О Враче & Цены", t: "Привет! Меня зовут Борис Ерохин (Пост-знакомство)", u: "https://t.me/c/1903289449/282" },
             { c: "📋 О Враче & Цены", t: "ПРОДОЛЖЕНИЕ ЗНАКОМСТВА (Часть 1)", u: "https://t.me/c/1903289449/285" },
             { c: "📋 О Враче & Цены", t: "Кто мой пациент?", u: "https://t.me/c/1903289449/27" },
@@ -567,7 +685,6 @@
         const bookingBtn = document.getElementById('bookingBtn');
         const aboutBtn = document.getElementById('aboutBtn');
 
-        // --- СОХРАНЕНИЕ СОСТОЯНИЯ ---
         function saveState() {
             try {
                 const state = { view: currentViewState, category: currentCategory, scroll: window.scrollY, search: searchQuery, ts: Date.now() };
@@ -604,6 +721,8 @@
             homeTilesContainer.style.display = 'grid';
             mainContent.style.paddingTop = '20px';
             specialCardsWrapper.style.display = 'flex';
+            // Показываем плавающую кнопку, когда на главной
+            floatingThemeBtn.style.display = 'flex';
             window.scrollTo({ top: 0 });
             tg.HapticFeedback.impactOccurred('light');
             localStorage.removeItem(STATE_KEY);
@@ -614,6 +733,8 @@
             currentCategory = category;
             homeTilesContainer.style.display = 'none';
             specialCardsWrapper.style.display = 'none';
+            // Скрываем плавающую кнопку, теперь есть кнопка в хедере
+            floatingThemeBtn.style.display = 'none';
             listHeader.style.display = 'block';
             listViewContainer.style.display = 'block';
             mainContent.style.paddingTop = (listHeader.offsetHeight + 20) + 'px';
@@ -734,7 +855,7 @@
             
             const related = db.filter(p => p.c === item.c && p.u !== item.u).sort(() => 0.5 - Math.random()).slice(0, 3);
             relatedContainer.innerHTML = '';
-            if (related.length === 0) relatedContainer.innerHTML = '<div style="color:#9AA5B1; font-size:13px;">Нет похожих материалов</div>';
+            if (related.length === 0) relatedContainer.innerHTML = '<div style="color: var(--text-sec); font-size:13px;">Нет похожих материалов</div>';
             else {
                 related.forEach(rel => {
                     const div = document.createElement('div');
@@ -751,13 +872,11 @@
         function closeSheet() { modalOverlay.classList.remove('active'); postSheet.classList.remove('active'); }
         modalOverlay.addEventListener('click', closeSheet);
 
-        // Обработчик кнопки записи (внешняя ссылка)
         bookingBtn.addEventListener('click', () => {
             tg.HapticFeedback.impactOccurred('medium');
             tg.openLink(BOOKING_URL);
         });
 
-        // Обработчик кнопки "О враче" (внутренний переход на категорию)
         aboutBtn.addEventListener('click', () => {
             tg.HapticFeedback.impactOccurred('medium');
             switchToList(ABOUT_CATEGORY_NAME);
