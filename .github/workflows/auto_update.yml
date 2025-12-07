@@ -1,0 +1,42 @@
+name: Auto Update Content
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Запуск каждые 6 часов
+  workflow_dispatch:      # Кнопка ручного запуска (чтобы ты мог нажать и проверить сразу)
+
+jobs:
+  update-db:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Разрешаем боту коммитить обратно в репо
+    
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install telethon
+
+    - name: Run parser
+      env:
+        TG_API_ID: ${{ secrets.TG_API_ID }}
+        TG_API_HASH: ${{ secrets.TG_API_HASH }}
+        TG_SESSION: ${{ secrets.TG_SESSION }}
+      run: python update_db.py
+
+    - name: Commit and Push if changes
+      run: |
+        git config --global user.name "Dr. Erokhin Bot"
+        git config --global user.email "bot@erokhin.com"
+        git add posts.json
+        # Коммитим только если есть изменения
+        timestamp=$(date -u)
+        git commit -m "Auto-update posts: ${timestamp}" || exit 0
+        git push
