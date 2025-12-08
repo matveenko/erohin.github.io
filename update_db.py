@@ -11,7 +11,7 @@ SESSION_STRING = os.environ['TG_SESSION']
 
 # ВСТАВЬ СЮДА ТОТ ID, КОТОРЫЙ У ТЕБЯ ЕСТЬ (как число, с минусом)
 # Например: -1903289449 или -1001903289449
-CHANNEL_ID = -1903289449 
+CHANNEL_ID = -1903289449
 
 JSON_FILE = 'posts.json'
 
